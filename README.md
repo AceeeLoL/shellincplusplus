@@ -1,1 +1,2 @@
-# shelltest
+# Shell in C++ (basic implementation)
+
