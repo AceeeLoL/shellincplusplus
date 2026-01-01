@@ -1,29 +1,44 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <sstream>
+#include <filesystem>
+
+std::vector<std::string> tokenize(const std::string& line){ 
+    std::istringstream iss(line);
+    std::vector<std::string> tokens;
+    std::string tok;
+    while (iss >> tok) {
+        tokens.push_back(tok);
+    }
+    return tokens;
+}
 
 int main(){
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
-    std::string command;
     
-    do
-    {
-        std::cout << "$ ";
-        std::getline(std::cin, command);
-        if(command == "exit"){
+    
+    for(std::string line; std::cout << "$ ", std::getline(std::cin, line); ){
+        auto tokens = tokenize(line);
+        if (tokens.empty()) {
+            continue;
+        }
+        
+        const std::string& cmd = tokens[0];
+
+        if(cmd == "exit"){
             return 0;
-        }
-        else if(command.substr(0, 4) == "echo"){
-            if(command.length() > 5){
-                std::cout << command.substr(5) << std::endl;
+        } else if(cmd  == "echo") {
+            for(size_t i = 1; i < tokens.size(); ++i) {
+                if (i > 1) {
+                    std::cout << ' ';
+                }
+                std::cout << tokens[i];
             }
-            else{
-                std::cout << std::endl;
-            }
+            std::cout << std::endl;
+        } else {
+            std::cout << cmd << ": invalid command" << std::endl;
         }
-        else{
-        std::cout << command << ": invalid command" << std::endl;
-        }
-}
-    while(command!= "exit");
+    }
 }
